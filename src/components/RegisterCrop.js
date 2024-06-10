@@ -1,5 +1,5 @@
   import React, { useState } from 'react';
-  import './RegisterCrop.css';
+  import '../css/RegisterCrop.css';
   //import { useHistory } from 'react-router-dom';
 
   const RegisterCrop = ({ addCrop }) => {

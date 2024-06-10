@@ -1,6 +1,6 @@
 // About.js
 import React from "react";
-import './about.css';
+import '../css/about.css';
 function About() {
   return (
     <section id="about">

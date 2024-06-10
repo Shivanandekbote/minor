@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './setup.css';
+import '../css/shop.css';
 
 const Shop = ({ addCrop }) => {
   const [allCrops, setAllCrops] = useState([]);
@@ -55,7 +55,7 @@ const Shop = ({ addCrop }) => {
           </div>
         ))}
       </div>
-      <Link to="/RegisterCrop" className="register-crop-button">
+      <Link to="/registercrop" className="register-crop-button"> {/* Corrected path */}
         Register Your Crop
       </Link>
     </div>

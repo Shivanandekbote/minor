@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './Navigation.css';
+import '../css/Navigation.css';
 
 function Navigation({ isAuthenticated, handleLogout, user }) {
   const [searchQuery, setSearchQuery] = useState("");
