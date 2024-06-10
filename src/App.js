@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Homepage from './components/home';
@@ -10,10 +9,11 @@ import Login from './components/login';
 import SignUp from './components/signup';
 import UserDetails from './components/userDetails';
 import ImageUpload from './components/imageUpload';
-import Setup from './components/shop';
+import Shop from './components/shop'; // Correct import
 import Profile from './components/Profile';
 import AdminLogin from './components/AdminLogin'; // Import the AdminLogin component
 import AdminProfile from './components/AdminProfile'; // Import the AdminProfile component
+import RegisterCrop from './components/RegisterCrop'; // Import the RegisterCrop component
 import './App.css';
 
 function App() {
@@ -47,7 +47,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/userdetails" element={<UserDetails />} />
           <Route path="/imageupload" element={<ImageUpload />} />
-          <Route path="/shop" element={<Setup addCrop={addCrop} />} />
+          <Route path="/shop" element={<Shop addCrop={addCrop} />} />
+          <Route path="/registercrop" element={<RegisterCrop addCrop={addCrop} />} /> {/* Corrected path and component */}
           <Route path="/admin/login" element={<AdminLogin />} /> {/* Add route for admin login */}
           <Route path="/admin/profile" element={<AdminProfile />} /> {/* Add route for admin profile */}
           <Route
