@@ -1,0 +1,85 @@
+/* style.css */
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-inner {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-inner h3 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-inner form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-inner form div {
+  margin-bottom: 15px;
+}
+
+.auth-inner label {
+  font-weight: bold;
+}
+
+.auth-inner input[type="text"],
+.auth-inner input[type="email"],
+.auth-inner input[type="password"],
+.auth-inner input[type="radio"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.auth-inner input[type="radio"] {
+  margin-right: 5px;
+}
+
+.auth-inner .mb-3 {
+  margin-bottom: 15px;
+}
+
+.auth-inner .d-grid {
+  margin-top: 15px;
+}
+
+.auth-inner .btn-primary {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.auth-inner .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.forgot-password {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.forgot-password a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
