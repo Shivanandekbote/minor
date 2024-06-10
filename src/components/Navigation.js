@@ -9,7 +9,6 @@ function Navigation({ isAuthenticated, handleLogout, user }) {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-    // You can add code here to handle search functionality
   };
 
   const logout = () => {
@@ -38,6 +37,7 @@ function Navigation({ isAuthenticated, handleLogout, user }) {
             <li><Link to="/about">ABOUT</Link></li>
             <li><Link to="/contact">CONTACT</Link></li>
             <li><Link to="/shop">SHOP</Link></li>
+            <li><Link to="/prices">PRICES</Link></li> {/* Add Prices link */}
             {isAuthenticated ? (
               <li className="profile-dropdown">
                 <button onClick={toggleDropdown} className="profile-button">

@@ -1,0 +1,24 @@
+.prices-container {
+    padding: 20px;
+  }
+  
+  .prices-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .price-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .crop-name {
+    font-weight: bold;
+  }
+  
+  .crop-price {
+    color: #555;
+  }
+  

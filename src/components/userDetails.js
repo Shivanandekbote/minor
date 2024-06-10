@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import AdminHome from "./adminHome";
 
-import UserHome from "./userHome";
+import UserHome from "./UserHome";
 
 export default function UserDetails() {
   const [userData, setUserData] = useState("");

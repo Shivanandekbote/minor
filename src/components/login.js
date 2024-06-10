@@ -1,14 +1,16 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../css/style.css';
 import { Link } from "react-router-dom";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(email, password);
     fetch("http://localhost:5000/login-user", {
       method: "POST",
       crossDomain: true,
@@ -25,15 +27,26 @@ export default function Login() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data, "userRegister");
-        if (data.status == "ok") {
-          alert("login successful");
+        if (data.status === "ok") {
+          alert("Login successful");
           window.localStorage.setItem("token", data.data);
           window.localStorage.setItem("loggedIn", true);
 
-          window.location.href = "./userDetails";
+          // Check if the user is an admin
+          if (data.role === "admin") {
+            navigate("/admin/profile");
+          } else {
+            navigate("/userDetails");
+          }
+        } else {
+          alert("Login failed. Please check your credentials and try again.");
         }
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        alert("An error occurred. Please try again later.");
       });
-  }
+  };
 
   return (
     <div className="auth-wrapper">
@@ -48,6 +61,7 @@ export default function Login() {
               className="form-control"
               placeholder="Enter email"
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
@@ -58,6 +72,7 @@ export default function Login() {
               className="form-control"
               placeholder="Enter password"
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
@@ -80,8 +95,7 @@ export default function Login() {
             </button>
           </div>
           <p className="forgot-password text-right">
-            New user?
-          <Link to="/signup">Sign Up</Link>
+            New user? <Link to="/signup">Sign Up</Link>
           </p>
         </form>
       </div>

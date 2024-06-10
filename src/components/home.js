@@ -2,7 +2,7 @@
 
 import React from "react";
 import About from "./About";
-import Setup from "./shop"; // Make sure to import the Setup component
+import Setup from "./Shop"; // Make sure to import the Setup component
 import "../css/home.css";
 import { Link } from "react-router-dom";
 
