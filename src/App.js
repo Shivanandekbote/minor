@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Homepage from './components/Home';
+import Home from './components/Home';
 import Footer from './components/Footer';
 import Navigation from './components/Navigation';
 import About from './components/About';
 import Contact from './components/Contact';
-import Login from './components/Login';
-import SignUp from './components/SignUp';
-import UserDetails from './components/UserDetails';
-import ImageUpload from './components/ImageUpload';
-import Shop from './components/Shop';
+import login from './components/Login';
+import signup from './components/SignUp';
+import userDetails from './components/UserDetails';
+import imageupload from './components/ImageUpload';
+import shop from './components/Shop';
 import Profile from './components/Profile';
 import AdminLogin from './components/AdminLogin';
 import AdminProfile from './components/AdminProfile';
@@ -53,14 +53,14 @@ function App() {
       <div className="App">
         <Navigation isAuthenticated={isAuthenticated} handleLogout={handleLogout} user={user} />
         <Routes>
-          <Route path="/" element={<Homepage />} />
+          <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/userdetails" element={<UserDetails />} />
-          <Route path="/imageupload" element={<ImageUpload />} />
-          <Route path="/shop" element={<Shop addCrop={addCrop} addToCart={addToCart} />} />
+          <Route path="/login" element={<login handleLogin={handleLogin} />} />
+          <Route path="/signup" element={<signUp />} />
+          <Route path="/userdetails" element={<userDetails />} />
+          <Route path="/imageupload" element={<imageUpload />} />
+          <Route path="/shop" element={<shop addCrop={addCrop} addToCart={addToCart} />} />
           <Route path="/registercrop" element={<RegisterCrop addCrop={addCrop} />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/profile" element={<AdminProfile />} />
