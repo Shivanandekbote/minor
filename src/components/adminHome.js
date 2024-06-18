@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { faTrash,faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Container, Typography, Box, TextField, IconButton, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from 'react-router-dom';
 
-export default function AdminHome({}) {
-  //setting state
+const AdminHome = () => {
   const [data, setData] = useState([]);
-  const [searchQuery,setSearchQuery]=useState("")
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllUser();
-  },[searchQuery]);
+  }, [searchQuery]);
 
-  //fetching all user
   const getAllUser = () => {
     fetch(`http://localhost:5000/getAllUser?search=${searchQuery}`, {
       method: "GET",
@@ -23,13 +24,15 @@ export default function AdminHome({}) {
       });
   };
 
-  //logout
-  const logOut = () => {
-    window.localStorage.clear();
-    window.location.href = "./sign-in";
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  //deleting user
+  const logOut = () => {
+    window.localStorage.clear();
+    navigate('/sign-in');
+  };
+
   const deleteUser = (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}`)) {
       fetch("http://localhost:5000/deleteUser", {
@@ -49,73 +52,58 @@ export default function AdminHome({}) {
           alert(data.data);
           getAllUser();
         });
-    } else {
     }
   };
-  function handleSearch(e){
-    setSearchQuery(e.target.value)
-
-  }
 
   return (
-    <div className="auth-wrapper" style={{ height: "auto", marginTop: 50 }}>
-      <div className="auth-inner" style={{ width: "fit-content" }}>
-        <h3>Welcome Admin</h3>
-        <div style={{ position: "relative", marginBottom: 10 }}>
-          <FontAwesomeIcon
-            icon={faSearch}
-            style={{ position: "absolute", left: 10, top: 13, color: "black" }}
-          />
-          <input
-            type="text"
+    <Container component="main" maxWidth="md" sx={{ mt: 8 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography component="h1" variant="h5">
+          Welcome Admin
+        </Typography>
+        <Box sx={{ mt: 2, width: '100%', position: 'relative', mb: 2 }}>
+          <FontAwesomeIcon icon={faSearch} style={{ position: 'absolute', left: 10, top: 13, color: 'black' }} />
+          <TextField
             placeholder="Search..."
+            value={searchQuery}
             onChange={handleSearch}
-            style={{
-              padding: "8px 32px 8px 32px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
+            fullWidth
+            sx={{ pl: 4 }}
           />
-          <span
-            style={{ position: "absolute", right: 10, top: 8, color: "#aaa" }}
-          >
-           {searchQuery.length>0?`Records Found ${data.length}`:`Total Records ${data.length}`} 
-          </span>
-        </div>
-        <table style={{ width: 700 }}>
-          <tr style={{ textAlign: "center" }}>
-            <th>Name</th>
-            <th>Email</th>
-            <th>User Type</th>
-            <th>Delete</th>
-          </tr>
-          {data.map((i) => {
-            return (
-              <tr style={{ textAlign: "center" }}>
-                <td>{i.fname}</td>
-                <td>{i.email}</td>
-                <td>{i.userType}</td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    onClick={() => deleteUser(i._id, i.fname)}
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </table>
-
-        <button
-          onClick={logOut}
-          className="btn btn-primary"
-          style={{ marginTop: 10 }}
-        >
+          <Typography variant="body2" sx={{ position: 'absolute', right: 10, top: 13, color: '#aaa' }}>
+            {searchQuery.length > 0 ? `${data.length} Records Found` : `Total Records ${data.length}`}
+          </Typography>
+        </Box>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>User Type</TableCell>
+              <TableCell>Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((user) => (
+              <TableRow key={user._id}>
+                <TableCell>{user.fname}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.userType}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => deleteUser(user._id, user.fname)}>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Button variant="contained" color="secondary" sx={{ mt: 3 }} onClick={logOut}>
           Log Out
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Container>
   );
-}
+};
+
+export default AdminHome;

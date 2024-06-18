@@ -1,134 +1,179 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "../css/style.css";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Alert,
+  FormControlLabel,
+  Switch,
+  CircularProgress,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-export default function SignUp() {
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("");
-  const [secretKey, setSecretKey] = useState("");
+const theme = createTheme();
 
-  const handleSubmit = (e) => {
-    if (userType == "Admin" && secretKey != "AdarshT") {
-      e.preventDefault();
-      alert("Invalid Admin");
-    } else {
-      e.preventDefault();
+const SignUp = () => {
+  const initialFormData = {
+    userType: "User",
+    secretKey: "",
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+  };
 
-      console.log(fname, lname, email, password);
-      fetch("http://localhost:5000/register", {
+  const [formData, setFormData] = useState(initialFormData);
+  const [showAdminFields, setShowAdminFields] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleUserTypeChange = () => {
+    const newUserType = formData.userType === "User" ? "Admin" : "User";
+    setFormData({ ...formData, userType: newUserType });
+    setShowAdminFields(newUserType === "Admin");
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const signupData = {
+        ...formData,
+        secretKey: formData.userType === "Admin" ? formData.secretKey : null,
+      };
+
+      const response = await fetch("http://localhost:5000/api/signup", {
         method: "POST",
-        crossDomain: true,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({
-          fname,
-          email,
-          lname,
-          password,
-          userType,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data, "userRegister");
-          if (data.status == "ok") {
-            alert("Registration Successful");
-          } else {
-            alert("Something went wrong");
-          }
-        });
+        body: JSON.stringify(signupData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to sign up");
+      }
+
+      const data = await response.json();
+      console.log("Sign up successful:", data);
+      // Optionally, you can redirect or show a success message here
+
+    } catch (error) {
+      console.error("Sign up error:", error.message);
+      setError("Failed to sign up. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-inner">
-        <form onSubmit={handleSubmit}>
-          <h3>Sign Up</h3>
-          <div>
-            Register As
-            <input
-              type="radio"
-              name="UserType"
-              value="User"
-              onChange={(e) => setUserType(e.target.value)}
-            />
-            User
-            <input
-              type="radio"
-              name="UserType"
-              value="Admin"
-              onChange={(e) => setUserType(e.target.value)}
-            />
-            Admin
-          </div>
-          {userType == "Admin" ? (
-            <div className="mb-3">
-              <label>Secret Key</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Secret Key"
-                onChange={(e) => setSecretKey(e.target.value)}
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+            Sign Up as {formData.userType}
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.userType === "Admin"}
+                onChange={handleUserTypeChange}
               />
-            </div>
-          ) : null}
-
-          <div className="mb-3">
-            <label>First name</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="First name"
-              onChange={(e) => setFname(e.target.value)}
+            }
+            label={
+              formData.userType === "User"
+                ? "Switch to Admin"
+                : "Switch to User"
+            }
+          />
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            {showAdminFields && (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Secret Key"
+                name="secretKey"
+                value={formData.secretKey}
+                onChange={handleInputChange}
+              />
+            )}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="First Name"
+              name="fname"
+              value={formData.fname}
+              onChange={handleInputChange}
             />
-          </div>
-
-          <div className="mb-3">
-            <label>Last name</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Last name"
-              onChange={(e) => setLname(e.target.value)}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Last Name"
+              name="lname"
+              value={formData.lname}
+              onChange={handleInputChange}
             />
-          </div>
-
-          <div className="mb-3">
-            <label>Email address</label>
-            <input
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
               type="email"
-              className="form-control"
-              placeholder="Enter email"
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
             />
-          </div>
-
-          <div className="mb-3">
-            <label>Password</label>
-            <input
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
               type="password"
-              className="form-control"
-              placeholder="Enter password"
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
             />
-          </div>
-
-          <div className="d-grid">
-            <button type="submit" className="btn btn-primary">
-              Sign Up
-            </button>
-          </div>
-          <p className="forgot-password text-right">
-            Already registered <Link to="/login">Sign In</Link></p>
-        </form>
-      </div>
-    </div>
+            {error && <Alert severity="error">{error}</Alert>}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Sign Up"}
+            </Button>
+            <Typography align="center">
+              Already registered?{" "}
+              <Link to="/login" style={{ textDecoration: "none", color: "#1976d2" }}>
+                Sign In
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
-}
+};
+
+export default SignUp;

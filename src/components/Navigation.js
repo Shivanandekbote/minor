@@ -1,10 +1,63 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import '../css/Navigation.css';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Button,
+  InputBase,
+  Box,
+  Avatar,
+} from "@mui/material";
+import { Search as SearchIcon, /*--AccountCircle*/ Menu as MenuIcon } from "@mui/icons-material"; // Make sure to import icons from '@mui/icons-material'
+import { styled, alpha } from "@mui/material/styles";
+import "../css/Navigation.css";
+
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
 
 function Navigation({ isAuthenticated, handleLogout, user }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -16,57 +69,82 @@ function Navigation({ isAuthenticated, handleLogout, user }) {
     navigate('/login');
   };
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
-    <nav className="navbar">
-      <div className="container">
-        <div className="navbar-header">
-          <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-            <span className="icon-bar"></span>
-            <span className="icon-bar"></span>
-            <span className="icon-bar"></span> 
-          </button>
-          <Link className="navbar-brand" to="/">SDG 2- ZERO HUNGER</Link>
-        </div>
-        <div className="collapse navbar-collapse" id="myNavbar">
-          <ul className="nav navbar-nav pull-right">
-            <li><Link to="/">HOME</Link></li>
-            <li><Link to="/about">ABOUT</Link></li>
-            <li><Link to="/contact">CONTACT</Link></li>
-            <li><Link to="/shop">SHOP</Link></li>
-            <li><Link to="/prices">PRICES</Link></li> {/* Add Prices link */}
-            {isAuthenticated ? (
-              <li className="profile-dropdown">
-                <button onClick={toggleDropdown} className="profile-button">
-                  <img src={user.profilePicture} alt="Profile" className="profile-picture" />
-                  {user.username} <span className="caret"></span>
-                </button>
-                {dropdownVisible && (
-                  <ul className="dropdown-menu">
-                    <li><Link to="/profile">Profile</Link></li>
-                    <li><button onClick={logout} className="logout-button">Logout</button></li>
-                  </ul>
-                )}
-              </li>
-            ) : (
-              <li><Link to="/login">LOGIN</Link></li>
-            )}
-          </ul>
-        </div>
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search..."
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
+          SDG 2- ZERO HUNGER
+        </Typography>
+        <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
+          <Button component={Link} to="/" color="inherit">HOME</Button>
+          <Button component={Link} to="/about" color="inherit">ABOUT</Button>
+          <Button component={Link} to="/contact" color="inherit">CONTACT</Button>
+          <Button component={Link} to="/shop" color="inherit">SHOP</Button>
+          <Button component={Link} to="/prices" color="inherit">PRICES</Button>
+        </Box>
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ "aria-label": "search" }}
             value={searchQuery}
             onChange={handleSearch}
           />
-          {/* You can add a search button or additional search functionality here */}
-        </div>
-      </div>
-    </nav>
+        </Search>
+        {isAuthenticated ? (
+          <div>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <Avatar alt="Profile" src={user.profilePicture} />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem component={Link} to="/profile" onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={() => { handleClose(); logout(); }}>Logout</MenuItem>
+            </Menu>
+          </div>
+        ) : (
+          <Button component={Link} to="/login" color="inherit">LOGIN</Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
 

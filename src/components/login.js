@@ -1,104 +1,128 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import '../css/style.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function Login() {
+const theme = createTheme();
+
+const Login = ({ setIsAuthenticated, setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // useNavigate hook for navigation
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:5000/login-user", {
-      method: "POST",
-      crossDomain: true,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data, "userRegister");
-        if (data.status === "ok") {
-          alert("Login successful");
-          window.localStorage.setItem("token", data.data);
-          window.localStorage.setItem("loggedIn", true);
+    setError("");
+    setLoading(true);
 
-          // Check if the user is an admin
-          if (data.role === "admin") {
-            navigate("/admin/profile");
-          } else {
-            navigate("/userDetails");
-          }
-        } else {
-          alert("Login failed. Please check your credentials and try again.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error during login:", error);
-        alert("An error occurred. Please try again later.");
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data || "Invalid credentials");
+      }
+
+      setIsAuthenticated(true);
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+
+      toast.success("Logged in successfully!", {
+        onClose: () => {
+          navigate("/");
+        },
+      });
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError(error.message || "Invalid credentials");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-inner">
-        <form onSubmit={handleSubmit}>
-          <h3>Sign In</h3>
-
-          <div className="mb-3">
-            <label>Email address</label>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Enter email"
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <ToastContainer />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Sign In
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
-          </div>
-
-          <div className="mb-3">
-            <label>Password</label>
-            <input
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
               type="password"
-              className="form-control"
-              placeholder="Enter password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
             />
-          </div>
-
-          <div className="mb-3">
-            <div className="custom-control custom-checkbox">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="customCheck1"
-              />
-              <label className="custom-control-label" htmlFor="customCheck1">
-                Remember me
-              </label>
-            </div>
-          </div>
-
-          <div className="d-grid">
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-          <p className="forgot-password text-right">
-            New user? <Link to="/signup">Sign Up</Link>
-          </p>
-        </form>
-      </div>
-    </div>
+            {error && <Alert severity="error">{error}</Alert>}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Sign In"}
+            </Button>
+            <Typography align="center">
+              New user?{" "}
+              <Link to="/signup" style={{ textDecoration: "none", color: "#1976d2" }}>
+                Sign Up
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
-}
+};
+
+export default Login;

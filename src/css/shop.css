@@ -1,68 +1,37 @@
+/* shop.css */
+
 .setup-container {
-  padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 .crop-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Further reduced min width */
-  grid-gap: 10px; /* Further reduced gap between cards */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
 }
 
 .crop-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 345px;
+  margin: 1rem;
 }
 
 .crop-image {
   width: 100%;
-  height: 120px; /* Further reduced height */
-  object-fit: cover;
+  height: auto;
 }
 
 .crop-details {
-  padding: 6px; /* Further reduced padding */
-}
-
-.crop-name {
-  font-size: 14px; /* Further reduced font size */
-  margin-bottom: 4px;
-}
-
-.crop-quantity, .crop-price {
-  margin-bottom: 4px;
-  font-size: 10px; /* Further reduced font size */
+  text-align: left;
 }
 
 .add-to-cart-button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 4px 8px; /* Further reduced padding */
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 12px; /* Reduced font size */
+  margin-top: 1rem;
 }
 
-.add-to-cart-button:hover {
-  background-color: #0056b3;
-}
-
+.view-more-button,
 .register-crop-button {
-  display: block;
-  margin-top: 20px;
-  padding: 8px 16px; /* Reduced padding */
-  background-color: #007bff;
-  color: #fff;
-  text-decoration: none;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px; /* Reduced font size */
-}
-
-.register-crop-button:hover {
-  background-color: #0056b3;
+  text-align: center;
+  margin-top: 2rem;
 }
