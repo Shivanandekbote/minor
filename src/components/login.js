@@ -29,7 +29,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data || "Invalid credentials");
+        throw new Error(data.message || "Invalid credentials");
       }
 
       setIsAuthenticated(true);
@@ -50,7 +50,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
 
       toast.success("Logged in successfully!", {
         onClose: () => {
-          navigate("/");
+          navigate("/profile");
         },
       });
     } catch (error) {
@@ -101,7 +101,11 @@ const Login = ({ setIsAuthenticated, setUser }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {error}
+              </Alert>
+            )}
             <Button
               type="submit"
               fullWidth

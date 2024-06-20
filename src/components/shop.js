@@ -1,147 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, CardMedia, CardContent, CardActions, Button, CircularProgress, Alert } from '@mui/material';
-import '../css/shop.css';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, TextField, Typography, FormControl, FormHelperText, InputLabel, Input } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AuthContext } from '../contexts/AuthContext';
+import '../css/RegisterCrop.css';
 
-const Shop = ({ addToCart, isLoggedIn }) => {
-    const [allCrops, setAllCrops] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [userCrops, setUserCrops] = useState([]);
-    const [userMap, setUserMap] = useState({});
+const RegisterCrop = ({ addCrop }) => {
+    const { user } = useContext(AuthContext);
+    const [cropDetails, setCropDetails] = useState({
+        name: '',
+        quantity: '',
+        price: '',
+        image: null,
+    });
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchAllCrops();
-    }, []);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCropDetails({
+            ...cropDetails,
+            [name]: value,
+        });
+    };
 
-    const fetchAllCrops = async () => {
-        try {
-            const token = localStorage.getItem('accessToken'); // Example: Retrieve token from localStorage
-            const response = await fetch('http://localhost:5000/api/crops', {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Include token in Authorization header
-                },
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setCropDetails({
+                ...cropDetails,
+                image: file,
             });
-            if (!response.ok) {
-                throw new Error('Failed to fetch crops');
-            }
-            const data = await response.json();
-            setAllCrops(data);
-
-            // Create a map of userId to user names
-            const users = {};
-            data.forEach(crop => {
-                users[crop.owner] = crop.ownerName; // Assuming crop.ownerName exists
-            });
-            setUserMap(users);
-
-            // Filter user's own crops (assuming there's a field like owner in each crop)
-            const currentUserCrops = data.filter(crop => crop.owner === isLoggedIn); // Replace isLoggedIn with actual userId
-            setUserCrops(currentUserCrops);
-
-        } catch (error) {
-            console.error('Error fetching crops:', error.message);
-            setError(error.message);
-        } finally {
-            setLoading(false);
         }
     };
 
-    const handleAddToCart = (crop) => {
-        addToCart(crop);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('name', cropDetails.name);
+            formData.append('quantity', cropDetails.quantity);
+            formData.append('price', cropDetails.price);
+            formData.append('image', cropDetails.image);
+
+            const response = await fetch('http://localhost:5000/api/crops/register', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include', // Include credentials to send cookies
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to add crop');
+            }
+            
+            const savedCrop = await response.json();
+            addCrop(savedCrop);
+
+            setCropDetails({
+                name: '',
+                quantity: '',
+                price: '',
+                image: null,
+            });
+
+            navigate('/shop');
+        } catch (error) {
+            console.error('Error adding crop:', error.message);
+        }
     };
 
     return (
-        <Box className="setup-container" sx={{ padding: '2rem' }}>
+        <Box className="register-crop-container" sx={{ maxWidth: 600, mx: 'auto', p: 3, boxShadow: 3 }}>
             <Typography variant="h4" gutterBottom>
-                Explore Crops
+                Register Your Crop <FontAwesomeIcon icon="seedling" />
             </Typography>
-            {isLoggedIn && userCrops.length > 0 && (
-                <Box>
-                    <Typography variant="h5" gutterBottom>
-                        Your Registered Crops
-                    </Typography>
-                    <Box className="crop-grid" sx={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-                        {userCrops.map((crop) => (
-                            <Card key={crop.id} sx={{ maxWidth: 345 }}>
-                                <CardMedia
-                                    component="img"
-                                    height="200"
-                                    image={crop.image}
-                                    alt={crop.name}
-                                />
-                                <CardContent>
-                                    <Typography variant="h5" component="div">
-                                        {crop.name}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Quantity: {crop.quantity} kg
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Price: ${crop.price} per kg
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Registered by: {userMap[crop.owner]}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size="small" onClick={() => handleAddToCart(crop)}>Add to Cart</Button>
-                                </CardActions>
-                            </Card>
-                        ))}
-                    </Box>
-                </Box>
-            )}
-
-            <Typography variant="h5" gutterBottom>
-                Other Users' Crops
-            </Typography>
-            {loading ? (
-                <CircularProgress />
-            ) : error ? (
-                <Alert severity="error">{error}</Alert>
-            ) : (
-                <Box className="crop-grid" sx={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-                    {allCrops.map((crop) => (
-                        <Card key={crop.id} sx={{ maxWidth: 345 }}>
-                            <CardMedia
-                                component="img"
-                                height="200"
-                                image={crop.image}
-                                alt={crop.name}
-                            />
-                            <CardContent>
-                                <Typography variant="h5" component="div">
-                                    {crop.name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Quantity: {crop.quantity} kg
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Price: ${crop.price} per kg
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Registered by: {userMap[crop.owner]}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small" onClick={() => handleAddToCart(crop)}>Add to Cart</Button>
-                            </CardActions>
-                        </Card>
-                    ))}
-                </Box>
-            )}
-            <Box sx={{ textAlign: 'center', marginTop: '2rem' }}>
-                <Link to="/register-crop" style={{ textDecoration: 'none' }}>
-                    <Button variant="contained" color="secondary">
-                        Register Your Crop
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <FormControl fullWidth margin="normal">
+                    <TextField 
+                        label="Crop Name"
+                        id="name"
+                        name="name"
+                        value={cropDetails.name}
+                        onChange={handleChange}
+                        required
+                        helperText="Enter the name of the crop."
+                        InputProps={{
+                            startAdornment: <FontAwesomeIcon icon="leaf" />
+                        }}
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <TextField 
+                        label="Quantity (kg)"
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        value={cropDetails.quantity}
+                        onChange={handleChange}
+                        required
+                        helperText="Enter the quantity in kilograms."
+                        InputProps={{
+                            startAdornment: <FontAwesomeIcon icon="weight-hanging" />
+                        }}
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <TextField 
+                        label="Price per kg"
+                        type="number"
+                        id="price"
+                        name="price"
+                        value={cropDetails.price}
+                        onChange={handleChange}
+                        required
+                        helperText="Enter the price per kilogram."
+                        InputProps={{
+                            startAdornment: <FontAwesomeIcon icon="dollar-sign" />
+                        }}
+                    />
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel htmlFor="image">
+                        Crop Image <FontAwesomeIcon icon="image" />
+                    </InputLabel>
+                    <Input type="file" id="image" name="image" onChange={handleImageChange} />
+                    <FormHelperText>Upload an image of the crop.</FormHelperText>
+                </FormControl>
+                <Box mt={2}>
+                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                        <FontAwesomeIcon icon="plus-circle" /> Register Crop
                     </Button>
-                </Link>
-            </Box>
+                </Box>
+            </form>
         </Box>
     );
 };
 
-export default Shop;
+export default RegisterCrop;

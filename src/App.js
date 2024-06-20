@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Footer from './components/Footer';
@@ -15,62 +15,33 @@ import Cart from './components/Cart';
 import Prices from './components/Prices';
 import SignUp from './components/SignUp';
 import './App.css';
-
-// Separate context for authentication
-export const AuthContext = React.createContext();
-
-// Separate context for cart management
-export const CartContext = React.createContext();
+import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 
 function App() {
-  const [crops, setCrops] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-
-  const addCrop = (cropDetails) => {
-    setCrops([...crops, cropDetails]);
-  };
-
-  const addToCart = (crop) => {
-    setCartItems([...cartItems, crop]);
-  };
-
-  const removeFromCart = (index) => {
-    const newCartItems = [...cartItems];
-    newCartItems.splice(index, 1);
-    setCartItems(newCartItems);
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    localStorage.removeItem('user'); // Optional: remove user data from localStorage
-  };
-
   return (
     <Router>
       <div className="App">
-        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser }}>
-          <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
-            <Navigation isAuthenticated={isAuthenticated} handleLogout={handleLogout} user={user} />
+        <AuthProvider>
+          <CartProvider>
+            <Navigation />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/prices" element={<Prices />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/admin-login" element={<AdminLogin />} />
-              <Route path="/admin-profile" element={isAuthenticated ? <AdminProfile /> : <Navigate to="/admin-login" />} />
-              <Route path="/register-crop" element={isAuthenticated ? <RegisterCrop addCrop={addCrop} /> : <Navigate to="/login" />} />
+              <Route path="/admin-profile" element={<AdminProfile />} />
+              <Route path="/register-crop" element={<RegisterCrop />} />
             </Routes>
             <Footer />
-          </CartContext.Provider>
-        </AuthContext.Provider>
+          </CartProvider>
+        </AuthProvider>
       </div>
     </Router>
   );
