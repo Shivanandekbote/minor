@@ -155,3 +155,16 @@
 .logout-button:hover {
   background-color: #444;
 }
+/* Example custom styles */
+.MuiAppBar-root {
+  background-color: #3498db !important;
+}
+
+.MuiButton-root {
+  margin-right: 10px;
+}
+
+.MuiTypography-root {
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}

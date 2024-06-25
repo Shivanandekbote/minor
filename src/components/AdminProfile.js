@@ -19,43 +19,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminProfile = ({ user, handleLogout }) => {
-  const classes = useStyles();
-  const [formData, setFormData] = useState({
-    fname: user.fname,
-    lname: user.lname,
-    email: user.email,
-    password: user.password,
-    userType: user.userType,
-    secretKey: user.secretKey,
-  });
+  // const classes = useStyles();
+  // const [formData, setFormData] = useState({
+  //   fname: user.fname,
+  //   lname: user.lname,
+  //   email: user.email,
+  //   password: user.password,
+  //   userType: user.userType,
+  //   secretKey: user.secretKey,
+  // });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('/api/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        console.log('User updated successfully');
-      } else {
-        console.error('Failed to update user');
-      }
-    } catch (error) {
-      console.error('Failed to update user', error);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch('/api/update', {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+  //     if (response.ok) {
+  //       console.log('User updated successfully');
+  //     } else {
+  //       console.error('Failed to update user');
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to update user', error);
+  //   }
+  // };
 
   return (
     <div className={classes.root}>

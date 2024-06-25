@@ -1,20 +1,17 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Typography, FormControl, FormHelperText, InputLabel, Input } from '@mui/material';
+import { Box, Button, TextField, Typography, FormControl, FormHelperText } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AuthContext } from '../contexts/AuthContext';
-import '../css/RegisterCrop.css';
+import '../css/RegisterCrop.css'; // Ensure correct path to CSS file
 
-const RegisterCrop = ({ addCrop }) => {
-    const { user } = useContext(AuthContext);
+const RegisterCrop = () => {
     const [cropDetails, setCropDetails] = useState({
         name: '',
         quantity: '',
         price: '',
         image: null,
     });
-
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Navigation hook
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -53,9 +50,6 @@ const RegisterCrop = ({ addCrop }) => {
                 throw new Error('Failed to add crop');
             }
             
-            const savedCrop = await response.json();
-            addCrop(savedCrop);
-
             setCropDetails({
                 name: '',
                 quantity: '',
@@ -63,7 +57,7 @@ const RegisterCrop = ({ addCrop }) => {
                 image: null,
             });
 
-            navigate('/shop');
+            navigate('/shop'); // Navigate to shop page after successful registration
         } catch (error) {
             console.error('Error adding crop:', error.message);
         }
@@ -76,54 +70,50 @@ const RegisterCrop = ({ addCrop }) => {
             </Typography>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <FormControl fullWidth margin="normal">
-                    <TextField 
-                        label="Crop Name"
+                    <TextField
                         id="name"
                         name="name"
+                        label="Crop Name"
                         value={cropDetails.name}
                         onChange={handleChange}
                         required
-                        helperText="Enter the name of the crop."
-                        InputProps={{
-                            startAdornment: <FontAwesomeIcon icon="leaf" />
-                        }}
                     />
+                    <FormHelperText>Enter the name of the crop.</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth margin="normal">
-                    <TextField 
-                        label="Quantity (kg)"
+                    <TextField
                         type="number"
                         id="quantity"
                         name="quantity"
+                        label="Quantity (kg)"
                         value={cropDetails.quantity}
                         onChange={handleChange}
                         required
-                        helperText="Enter the quantity in kilograms."
-                        InputProps={{
-                            startAdornment: <FontAwesomeIcon icon="weight-hanging" />
-                        }}
                     />
+                    <FormHelperText>Enter the quantity in kilograms.</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth margin="normal">
-                    <TextField 
-                        label="Price per kg"
+                    <TextField
                         type="number"
                         id="price"
                         name="price"
+                        label="Price per kg"
                         value={cropDetails.price}
                         onChange={handleChange}
                         required
-                        helperText="Enter the price per kilogram."
-                        InputProps={{
-                            startAdornment: <FontAwesomeIcon icon="dollar-sign" />
-                        }}
                     />
+                    <FormHelperText>Enter the price per kilogram.</FormHelperText>
                 </FormControl>
                 <FormControl fullWidth margin="normal">
-                    <InputLabel htmlFor="image">
-                        Crop Image <FontAwesomeIcon icon="image" />
-                    </InputLabel>
-                    <Input type="file" id="image" name="image" onChange={handleImageChange} />
+                    <TextField
+                        type="file"
+                        id="image"
+                        name="image"
+                        onChange={handleImageChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
                     <FormHelperText>Upload an image of the crop.</FormHelperText>
                 </FormControl>
                 <Box mt={2}>

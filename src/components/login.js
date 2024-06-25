@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { } from "react";
+import { Link } from "react-router-dom";
 import {
   Container,
   TextField,
@@ -11,55 +11,12 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; // Import useAuth from AuthContext
 
 const theme = createTheme();
 
-const Login = ({ setIsAuthenticated, setUser }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Invalid credentials");
-      }
-
-      setIsAuthenticated(true);
-      setUser(data);
-      localStorage.setItem("user", JSON.stringify(data));
-
-      toast.success("Logged in successfully!", {
-        onClose: () => {
-          navigate("/profile");
-        },
-      });
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError(error.message || "Invalid credentials");
-    } finally {
-      setLoading(false);
-    }
-  };
+const Login = () => {
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -101,11 +58,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {error && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            )}
+            {error && <Alert severity="error">{error}</Alert>}
             <Button
               type="submit"
               fullWidth

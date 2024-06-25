@@ -1,13 +1,15 @@
-// Contact.js
-import React from "react";
+import React from 'react';
+import { Typography, Link } from '@mui/material';
 
 function Contact() {
   return (
     <section id="contact">
-      <h2>Contact Us</h2>
-      <p>
-        You can contact us at <a href="mailto:info@example.com">info@example.com</a>
-      </p>
+      <Typography variant="h2" gutterBottom>
+        Contact Us
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        You can contact us at <Link href="mailto:info@example.com">info@example.com</Link>
+      </Typography>
     </section>
   );
 }

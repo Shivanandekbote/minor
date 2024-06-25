@@ -5,55 +5,55 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from 'react-router-dom';
 
 const AdminHome = () => {
-  const [data, setData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
+  // const [data, setData] = useState([]);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    getAllUser();
-  }, [searchQuery]);
+  // useEffect(() => {
+  //   getAllUser();
+  // }, [searchQuery]);
 
-  const getAllUser = () => {
-    fetch(`http://localhost:5000/getAllUser?search=${searchQuery}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data, "userData");
-        setData(data.data);
-      });
-  };
+  // const getAllUser = () => {
+  //   fetch(`http://localhost:5000/getAllUser?search=${searchQuery}`, {
+  //     method: "GET",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data, "userData");
+  //       setData(data.data);
+  //     });
+  // };
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  // const handleSearch = (e) => {
+  //   setSearchQuery(e.target.value);
+  // };
 
-  const logOut = () => {
-    window.localStorage.clear();
-    navigate('/sign-in');
-  };
+  // const logOut = () => {
+  //   window.localStorage.clear();
+  //   navigate('/sign-in');
+  // };
 
-  const deleteUser = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}`)) {
-      fetch("http://localhost:5000/deleteUser", {
-        method: "POST",
-        crossDomain: true,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          userid: id,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          alert(data.data);
-          getAllUser();
-        });
-    }
-  };
+  // const deleteUser = (id, name) => {
+  //   if (window.confirm(`Are you sure you want to delete ${name}`)) {
+  //     fetch("http://localhost:5000/deleteUser", {
+  //       method: "POST",
+  //       crossDomain: true,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //         "Access-Control-Allow-Origin": "*",
+  //       },
+  //       body: JSON.stringify({
+  //         userid: id,
+  //       }),
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         alert(data.data);
+  //         getAllUser();
+  //       });
+  //   }
+  // };
 
   return (
     <Container component="main" maxWidth="md" sx={{ mt: 8 }}>
